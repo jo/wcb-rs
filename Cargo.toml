@@ -1,7 +1,15 @@
 [package]
 name = "wcb"
+description = "WebCrypto compatible encryption CLI"
 version = "1.0.0"
 edition = "2021"
+documentation = "https://docs.rs/webcryptobox/latest/wcb/"
+homepage = "https://github.com/jo/wcb-rs"
+repository = "https://github.com/jo/wcb-rs"
+readme = "README.md"
+license = "Apache-2.0"
+authors = ["Johannes J. Schmidt <schmidt@pm.me>"]
+keywords = ["WebCrypto", "crypto", "ec", "aes", "cli"]
 
 [dependencies]
 webcryptobox = "2.0.0"
