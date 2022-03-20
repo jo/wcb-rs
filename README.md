@@ -13,12 +13,8 @@ See [Webcryptobox Rust](https://github.com/jo/webcryptobox-rs) for the library.
 ## Installation
 
 ```sh
-git clone https://github.com/jo/wcb-rs
-cd wcb-rs
-cargo install --path .
+cargo install wcb
 ```
-
-There will be a Bash completion script generated at eg ./target/release/build/wcb-d81aebf792a1a08c/out/wcb.bash which you can source.
 
 
 ## Usage
