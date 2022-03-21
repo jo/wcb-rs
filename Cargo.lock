@@ -294,7 +294,7 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
 name = "wcb"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
  "base64",
  "clap",
@@ -306,6 +306,8 @@ dependencies = [
 [[package]]
 name = "webcryptobox"
 version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9089ad573fd053560f7a8d9484902f1b6d7287939394a6aa33eb9f4b6402cfeb"
 dependencies = [
  "hex",
  "openssl",

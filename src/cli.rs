@@ -187,6 +187,10 @@ pub enum Commands {
         /// Output filename to write base64 encoded encrypted message to. If omitted, print to STDOUT
         #[clap(short, long, parse(from_os_str), value_name = "FILENAME")]
         output_filename: Option<PathBuf>,
+
+        /// Base64 encode encrypted message
+        #[clap(short, long)]
+        base64: bool
     },
     /// Decrypt message
     Decrypt {
@@ -201,6 +205,10 @@ pub enum Commands {
         /// Output filename to write decrypted message to. If omitted, print to STDOUT
         #[clap(short, long, parse(from_os_str), value_name = "FILENAME")]
         output_filename: Option<PathBuf>,
+
+        /// Base64 decode encrypted message
+        #[clap(short, long)]
+        base64: bool
     },
     /// Encrypt message with key pair
     EncryptTo {
@@ -224,6 +232,10 @@ pub enum Commands {
         /// Output filename to write base64 encoded encrypted message to. If omitted, print to STDOUT
         #[clap(short, long, parse(from_os_str), value_name = "FILENAME")]
         output_filename: Option<PathBuf>,
+
+        /// Base64 encode encrypted message
+        #[clap(short, long)]
+        base64: bool
     },
     /// Decrypt message with key pair
     DecryptFrom {
@@ -247,5 +259,9 @@ pub enum Commands {
         /// Output filename to write decrypted message to. If omitted, print to STDOUT
         #[clap(short, long, parse(from_os_str), value_name = "FILENAME")]
         output_filename: Option<PathBuf>,
+
+        /// Base64 decode encrypted message
+        #[clap(short, long)]
+        base64: bool
     },
 }

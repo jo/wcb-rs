@@ -2,7 +2,7 @@ use crate::cli;
 
 use webcryptobox::*;
 
-use std::io::{Error, Read};
+use std::io::{Error, Read, Write};
 use std::path::PathBuf;
 use std::{fs, io};
 
@@ -45,7 +45,7 @@ fn read_base64_file_or_stdin(filename: &Option<PathBuf>) -> Vec<u8> {
 fn write_file_or_stdout(filename: &Option<PathBuf>, data: &Vec<u8>) {
     match &filename {
         Some(path) => fs::write(path, data).expect("Unable to write file"),
-        None => println!("{}", std::str::from_utf8(data).unwrap()),
+        None => io::stdout().write_all(data).expect("Unable to write to stdout")
     }
 }
 
@@ -239,21 +239,30 @@ impl Wcb {
                 key,
                 filename,
                 output_filename,
+                base64,
             } => {
                 let key = read_hex(&key);
                 let data = read_file_or_stdin(&filename);
 
                 let encrypted_data = encrypt(&key, &data).unwrap();
 
-                write_base64_file_or_stdout(&output_filename, &encrypted_data)
+                if *base64 {
+                    write_base64_file_or_stdout(&output_filename, &encrypted_data)
+                } else {
+                    write_file_or_stdout(&output_filename, &encrypted_data)
+                }
             }
             cli::Commands::Decrypt {
                 key,
                 filename,
                 output_filename,
+                base64,
             } => {
                 let key = read_hex(&key);
-                let data = read_base64_file_or_stdin(&filename);
+                let data = match base64 {
+                    true => read_base64_file_or_stdin(&filename),
+                    false => read_file_or_stdin(&filename)
+                };
 
                 let decrypted_data = decrypt(&key, &data).unwrap();
 
@@ -264,6 +273,7 @@ impl Wcb {
                 public_key_filename,
                 filename,
                 output_filename,
+                base64,
             } => {
                 let private_key_pem = read_file(&private_key_filename);
                 let private_key = import_private_key_pem(&private_key_pem).unwrap();
@@ -275,13 +285,18 @@ impl Wcb {
 
                 let encrypted_data = derive_and_encrypt(private_key, public_key, &data).unwrap();
 
-                write_base64_file_or_stdout(&output_filename, &encrypted_data)
+                if *base64 {
+                    write_base64_file_or_stdout(&output_filename, &encrypted_data)
+                } else {
+                    write_file_or_stdout(&output_filename, &encrypted_data)
+                }
             }
             cli::Commands::DecryptFrom {
                 private_key_filename,
                 public_key_filename,
                 filename,
                 output_filename,
+                base64,
             } => {
                 let private_key_pem = read_file(&private_key_filename);
                 let private_key = import_private_key_pem(&private_key_pem).unwrap();
@@ -289,21 +304,15 @@ impl Wcb {
                 let public_key_pem = read_file(&public_key_filename);
                 let public_key = import_public_key_pem(&public_key_pem).unwrap();
 
-                let data = read_base64_file_or_stdin(&filename);
+                let data = match base64 {
+                    true => read_base64_file_or_stdin(&filename),
+                    false => read_file_or_stdin(&filename)
+                };
 
                 let decrypted_data = derive_and_decrypt(private_key, public_key, &data).unwrap();
 
                 write_file_or_stdout(&output_filename, &decrypted_data)
-            } // TODO
-              //  encrypt-private-key <PASSWORD> [FILENAME]
-              //                                  - Encrypt private key with password. Key either read from FILENAME or STDIN.
-              //  decrypt-private-key <PASSWORD> [FILENAME]
-              //                                  - Decrypt private key with password. Key either read from FILENAME or STDIN.
-              //
-              //  encrypt-private-key-to <PRIVATE_KEY> <PUBLIC_KEY> [FILENAME]
-              //                                  - Encrypt private key with private and public key. Private key either read from FILENAME or STDIN.
-              //  decrypt-private-key-from <PRIVATE_KEY> <PUBLIC_KEY> [FILENAME]
-              //                                  - Decrypt private key with private and public key. Private key either read from FILENAME or STDIN.
+            }
         }
 
         Ok(())
